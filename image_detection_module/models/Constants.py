@@ -4,4 +4,4 @@
 from enum import Enum
 
 class Constants(Enum):
-    threshold? = 1
+    threshold = 1

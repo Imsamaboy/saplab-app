@@ -1,7 +1,8 @@
 #!/usr/bin/python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-from models.AbstractBox import AbstractBox
+from . import AbstractBox
+
 
 class FormulaBox(AbstractBox):
     def __init__(self):
@@ -10,4 +11,3 @@ class FormulaBox(AbstractBox):
         self.height = None
         self.width = None
         self.position_in_line_box = None
-

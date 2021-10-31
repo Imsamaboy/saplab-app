@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from models.AbstractBox import AbstractBox
+from . import AbstractBox
 
 
 class ImageBox(AbstractBox):

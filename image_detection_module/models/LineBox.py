@@ -1,7 +1,8 @@
 #!/usr/bin/python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-from models.AbstractBox import AbstractBox
+from . import AbstractBox
+
 
 class LineBox(AbstractBox):
     def __init__(self):
@@ -12,4 +13,3 @@ class LineBox(AbstractBox):
 
     def split_line_box_into_words(self, ):
         pass
-
