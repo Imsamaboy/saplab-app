@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from image_detection_module.type_handler import handle
-# from models.utils import create_pages
-from image_detection_module.split_handler import run
+from handler.type_handler import handle
+from handler.split_handler import run
 from models.page import Page
 from utils.utils import read_from_pdf
 
