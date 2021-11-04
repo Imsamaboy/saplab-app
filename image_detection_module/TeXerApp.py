@@ -10,6 +10,11 @@ from utils.utils import read_from_pdf
 
 class TeXerApp:
     def __init__(self):
+        """
+        !singleton class!
+        Эксземпляр создаётся при заходе в приложение.
+        Происходит подгрузка всех необходимых данных для других модулей.
+        """
         pass
 
     def main(self, path="", pages="20"):
