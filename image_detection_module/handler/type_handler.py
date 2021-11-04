@@ -29,7 +29,12 @@ def equals_checker_in_the_image_box(image_box: ImageBox) -> bool:
 
 
 def define_type_of_image_box(image_box: ImageBox):
-    if image_box.get_general_density() > 0.4:
+    """
+    :param image_box:
+    :return:
+    """
+    # baseline_height = 10  # pix
+    if image_box.get_general_density() > 0.15:
         image_box.set_type("text")
     else:
         image_box.set_type("smt else")

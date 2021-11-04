@@ -16,6 +16,7 @@ def split_image_box_into_lines(image_box: ImageBox, edge_value_parameter=0.2) ->
     edge_value = edge_value_parameter * image_box.width
     y_density = image_box.y_density
     y_density_filt = ss.medfilt(y_density, 9)
+
     # Установка границ деления на строки
     up_bound, down_bound = 0, 0
     dividing_lines = set()
@@ -25,6 +26,7 @@ def split_image_box_into_lines(image_box: ImageBox, edge_value_parameter=0.2) ->
         if y_density_filt[index + 1] > edge_value >= y_density_filt[index]:
             down_bound = index + 1
             dividing_lines.add(np.argmin(y_density[up_bound: down_bound + 1]) + up_bound)
+
     dividing_lines.add(image_box.height)
     dividing_lines = sorted(list(dividing_lines))
     # Деление и создание строк
@@ -36,15 +38,18 @@ def split_image_box_into_formula_and_text(image_box: ImageBox):
     pass
 
 
-def run(image_boxes):
+def run_split(image_boxes):
     for image_box in image_boxes:
         if image_box.type == "text":
+            # print("SPLITTING")
             image_box.line_boxes = split_image_box_into_lines(image_box)
         if image_box.type == "formula":
             pass
         if image_box.type == "text_with_formula":
             split_image_box_into_formula_and_text(image_box)
         if image_box.type == "figure":
+            pass
+        if image_box.type == "smt else":
             pass
 
 
