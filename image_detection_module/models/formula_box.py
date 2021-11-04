@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from image_detection_module.models import abstract_box
+from image_detection_module.models.abstract_box import AbstractBox
 
 
-class FormulaBox(abstract_box):
+class FormulaBox:
     def __init__(self):
         self.original_formula_image_box = None
         self.coords = None

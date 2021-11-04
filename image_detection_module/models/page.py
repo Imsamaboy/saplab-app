@@ -8,6 +8,8 @@ from utils.utils import get_gray_image
 from utils.utils import get_thresholded_and_binarized_image
 from utils.utils import get_dilated_image
 
+from models.image_box import ImageBox
+
 
 class Page:
     def __init__(self, original_image: np.ndarray):
@@ -21,7 +23,6 @@ class Page:
     def create_image_boxes(self, dilation=(10, 26)) -> None:
         """
         :param dilation:
-        :param binarization_border:
         :return:
         """
         gray_image = get_gray_image(self.original_image)
@@ -39,19 +40,22 @@ class Page:
                         color=(0, 0, 255),
                         thickness=1,
                         lineType=cv.LINE_AA)
+
         image_copy = inv_bin_image.copy()
         up_down_shift = dilation[0] // 2
         left_right_shift = dilation[1] // 2
         contours.sort(key=lambda x: compare_contours(x))
+
         for contour in contours:
             x, y, w, h = cv.boundingRect(contour)
-            cur_image = image_copy[y + up_down_shift - 2:y + h - up_down_shift,
-                                   x + left_right_shift - 1:x + w - left_right_shift].copy()
+            # cur_image = image_copy[y + up_down_shift - 2:y + h - up_down_shift,
+            #             x + left_right_shift - 1:x + w - left_right_shift].copy()
 
             image_copy[y + up_down_shift - 1:y + h - up_down_shift,
                        x + left_right_shift - 1:x + w - left_right_shift] = 0
-            # создавать ImageBox!
-            self.image_boxes.append(cur_image)
+
+            self.image_boxes.append(ImageBox(self.original_image[y + up_down_shift - 2:y + h - up_down_shift,
+                                             x + left_right_shift - 1:x + w - left_right_shift], coords=(0, 0)))
 
     def create_latex_page(self, ):
         pass

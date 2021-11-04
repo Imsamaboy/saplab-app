@@ -32,10 +32,6 @@ def read_from_pdf(pdf_file_path, *args) -> List[np.ndarray]:
     return images_list
 
 
-# def create_pages(path, pages="20") -> List:
-#     return [Page(simple_image) for simple_image in read_from_pdf(path, pages)]
-
-
 def show_images(window_name: str, images: List) -> None:
     """
     :param images:
@@ -81,6 +77,11 @@ def get_thresholded_and_binarized_image(image: np.ndarray,
 
 
 def get_dilated_image(image: np.ndarray, dilation=DILATION_BLOCK_SIZE):
+    """
+    :param image:
+    :param dilation:
+    :return:
+    """
     kernel = np.ones(dilation,
                      np.uint8)
 

@@ -11,59 +11,60 @@ import scipy.signal as ss
 #     plt.ylabel("Y-axis projection")
 #     plt.axis([0, width, height, 0])
 #     plt.show()
+from models.image_box import ImageBox
 
 
-def draw_x_density_with_filter(self, kernel=9):
-    plt.plot(np.arange(self.width),
-             ss.medfilt(self.x_density, kernel),
+def draw_x_density_with_filter(image_box: ImageBox, kernel=9):
+    plt.plot(np.arange(image_box.width),
+             ss.medfilt(image_box.x_density, kernel),
              # np.gradient(ss.medfilt(ss.medfilt(ss.medfilt(self.x_density, 15), 15), 15)),
-             np.arange(self.width),
-             np.full_like(np.arange(len(self.x_density)), np.average(self.x_density)), "r--",
-             np.arange(self.width),
-             np.full_like(np.arange(len(self.x_density)), np.max(self.x_density)), "g:")
+             np.arange(image_box.width),
+             np.full_like(np.arange(len(image_box.x_density)), np.average(image_box.x_density)), "r--",
+             np.arange(image_box.width),
+             np.full_like(np.arange(len(image_box.x_density)), np.max(image_box.x_density)), "g:")
     plt.title("X-density with median filtering")
     plt.xlabel("X-axis")
     plt.ylabel("Density")
     plt.legend(["Real value", "Average value", "Max value"])
     # plt.text(10, np.average(self.x_density), 'percents',)
-    plt.axis([0, self.width, 0, self.height])
+    plt.axis([0, image_box.width, 0, image_box.height])
     plt.show()
 
 
-def draw_x_density(self, middle_line=10):
-    plt.plot(np.arange(self.width), self.x_density,
-             np.arange(self.width), np.full_like(np.arange(len(self.x_density)), middle_line),
-             np.arange(self.width), np.full_like(np.arange(len(self.x_density)), middle_line + 10),
-             np.arange(self.width), np.full_like(np.arange(len(self.x_density)), middle_line - 10))
+def draw_x_density(image_box: ImageBox, middle_line=10):
+    plt.plot(np.arange(image_box.width), image_box.x_density,
+             np.arange(image_box.width), np.full_like(np.arange(len(image_box.x_density)), middle_line),
+             np.arange(image_box.width), np.full_like(np.arange(len(image_box.x_density)), middle_line + 10),
+             np.arange(image_box.width), np.full_like(np.arange(len(image_box.x_density)), middle_line - 10))
     plt.title("X-density")
     plt.xlabel("X-axis")
     plt.ylabel("Density")
-    plt.axis([0, self.width, 0, self.height])
+    plt.axis([0, image_box.width, 0, image_box.height])
     plt.show()
 
 
-def draw_y_density(self):
-    plt.plot(self.y_density,
-             np.arange(self.height),
-             np.full_like(np.arange(len(self.y_density)), np.average(self.y_density)),
-             np.arange(self.height), "r--",
-             np.full_like(np.arange(len(self.y_density)), np.max(self.y_density)),
-             np.arange(self.height), "g:",
-             np.full_like(np.arange(len(self.y_density)), np.median(self.y_density)),
-             np.arange(self.height), "k-.")
+def draw_y_density(image_box: ImageBox):
+    plt.plot(image_box.y_density,
+             np.arange(image_box.height),
+             np.full_like(np.arange(len(image_box.y_density)), np.average(image_box.y_density)),
+             np.arange(image_box.height), "r--",
+             np.full_like(np.arange(len(image_box.y_density)), np.max(image_box.y_density)),
+             np.arange(image_box.height), "g:",
+             np.full_like(np.arange(len(image_box.y_density)), np.median(image_box.y_density)),
+             np.arange(image_box.height), "k-.")
     plt.title("Y_density")
     plt.xlabel("Density")
     plt.ylabel("Y-axis projection")
     plt.legend(["Real value", "Average value", "Max value", "Median value"])
-    plt.axis([0, self.width, self.height, 0])
+    plt.axis([0, image_box.width, image_box.height, 0])
     plt.show()
 
 
-def draw_with_gaussian_filter(self, kernel=(5, 5), border=cv.BORDER_DEFAULT):
-    plt.plot(np.arange(self.width), cv.GaussianBlur(self.x_density, kernel, border))
+def draw_with_gaussian_filter(image_box: ImageBox, kernel=(5, 5), border=cv.BORDER_DEFAULT):
+    plt.plot(np.arange(image_box.width), cv.GaussianBlur(image_box.x_density, kernel, border))
     plt.title("Y_density")
     plt.xlabel("Density")
     plt.ylabel("Y-axis projection")
     plt.legend(["Real value", "Average value", "Max value", "Median value"])
-    plt.axis([0, self.width, 0, self.height])
+    plt.axis([0, image_box.width, 0, image_box.height])
     plt.show()

@@ -2,11 +2,11 @@ import scipy.signal as ss
 import numpy as np
 from typing import List
 
-from image_detection_module.models import image_box
-from image_detection_module.models import line_box
+from image_detection_module.models.image_box import ImageBox
+from image_detection_module.models.line_box import LineBox
 
 
-def split_image_box_into_lines(image_box: image_box, edge_value_parameter=0.2) -> List:
+def split_image_box_into_lines(image_box: ImageBox, edge_value_parameter=0.2) -> List:
     """
     :param image_box:
     :param edge_value_parameter:
@@ -28,11 +28,11 @@ def split_image_box_into_lines(image_box: image_box, edge_value_parameter=0.2) -
     dividing_lines.add(image_box.height)
     dividing_lines = sorted(list(dividing_lines))
     # Деление и создание строк
-    return [line_box(image_box.original_image_box[dividing_lines[border]:dividing_lines[border + 1]])
+    return [LineBox(image_box.original_image_box[dividing_lines[border]:dividing_lines[border + 1]])
             for border in range(len(dividing_lines) - 1)]
 
 
-def split_image_box_into_formula_and_text(image_box: image_box):
+def split_image_box_into_formula_and_text(image_box: ImageBox):
     pass
 
 

@@ -3,10 +3,10 @@
 """
 from typing import List
 
-from image_detection_module.models import image_box
+from image_detection_module.models.image_box import ImageBox
 
 
-def equals_checker_in_the_image_box(image_box: image_box) -> bool:
+def equals_checker_in_the_image_box(image_box: ImageBox) -> bool:
     """
     :param image_box:
     :return:
@@ -28,7 +28,7 @@ def equals_checker_in_the_image_box(image_box: image_box) -> bool:
         return False
 
 
-def define_type_of_image_box(image_box):
+def define_type_of_image_box(image_box: ImageBox):
     if image_box.get_general_density() > 0.4:
         image_box.set_type("text")
     else:
@@ -38,5 +38,4 @@ def define_type_of_image_box(image_box):
 def handle(pages):
     for page in pages:
         for image_box in page.get_image_boxes():
-            print(type(image_box))
             define_type_of_image_box(image_box)
