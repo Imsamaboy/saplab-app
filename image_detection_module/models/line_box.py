@@ -66,3 +66,14 @@ class LineBox(BoxFunctions):
                                    line_number=self.line_number,
                                    position_in_line=position)
                            for position, word in enumerate(self.words)]
+
+    def __str__(self):
+        return str({
+            "original_line_image_box": self.original_line_image_box,
+            "coords": self.coords,
+            "height": self.height,
+            "width": self.width,
+            "line_number": self.line_number,
+            "general_density": self.general_density,
+            "word_boxes": self.word_boxes
+        })

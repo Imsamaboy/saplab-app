@@ -16,8 +16,8 @@ class Page:
         self.original_image = original_image
         self.height = original_image.shape[0]
         self.width = original_image.shape[1]
-        self.dilated_image = None
-        self.page_number = None
+        self.dilated_image = get_dilated_image(original_image)
+        self.page_number = None     # Как устанавливаем?
         self.image_boxes = []
 
     def create_image_boxes(self, dilation=(10, 26)) -> None:

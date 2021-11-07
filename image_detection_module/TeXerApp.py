@@ -30,17 +30,14 @@ class TeXerApp:
             page.create_image_boxes()
         handle(pages)
         for page in pages:
-            # images = []
-            # print(len(page.get_image_boxes()))
             print("IMAGEBOXES")
             for image_box in page.get_image_boxes():
-                print("ImageBox coords")
-                print(image_box.coords)
+                pass
+                # print("ImageBox coords")
+                # print(image_box.coords)
                 # cv.imshow("", image_box.original_image_box)
                 # cv.waitKey(0)
                 # cv.destroyAllWindows()
-            # draw_x_density(image_box)
-            # show_images("", images)
             run_split(page.get_image_boxes())
         for page in pages:
             for count, image_box in enumerate(page.get_image_boxes()):
@@ -52,11 +49,11 @@ class TeXerApp:
                     print("LINEBOXES")
                     for line_box in image_box.get_line_boxes():
                         # print(line_box.line_number)
-                        # cv.imshow("LineBox", line_box.original_line_image_box)
-                        # cv.waitKey(0)
-                        # cv.destroyAllWindows()
-                        print("LineBox coords")
-                        print(line_box.coords)
+                        cv.imshow("LineBox", line_box.original_line_image_box)
+                        cv.waitKey(0)
+                        cv.destroyAllWindows()
+                        # print("LineBox coords")
+                        # print(line_box.coords)
                         line_box.split_line_box_into_words()
                         # print("Words:")
                         for word_box in line_box.word_boxes:
@@ -64,14 +61,14 @@ class TeXerApp:
                             # cv.waitKey(0)
                             # cv.destroyAllWindows()
                             # draw_x_density(word)
-                            print("WordBox coords")
-                            print(word_box.coords)
+                            # print("WordBox coords")
+                            # print(word_box.coords)
                             # print("Units")
                             word_box.split_word_box_into_units()
                             for unit in word_box.unit_boxes:
-                                # print("unit")
-                                print("Unit coords")
-                                print(unit.coords)
+                                pass
+                                # print("Unit coords")
+                                # print(unit.coords)
                                 # cv.imshow("units", unit.original_unit_image_box)
                                 # cv.waitKey(0)
                                 # cv.destroyAllWindows()

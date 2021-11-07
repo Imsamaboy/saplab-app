@@ -51,29 +51,30 @@ class WordBox(BoxFunctions):
                 is_local_first, is_local_last = True, False
         # Добавляем последний Unit
         units.append([begin, len(self.x_density)])
-        # Сливаем пересекающиеся интервалы
+        # Сливаем пересекающиеся интервалы, если такие есть
         merged_units = merge_intervals(units)
         return merged_units
 
     def split_word_box_into_units(self, ):
         """
+        Функция делит слово по пробелам на Unit'ы
         :return:
         """
         # TODO: сделать обрезание ненужных пикслей послабее!
         # IMPORTANT: если знак ;:=, то обрезание лишних пикслей работает неправильно!
         for position, unit in enumerate(self.units):
             unit_picture = self.thresholded_and_binarized_word_image_box[:, list(range(unit[0], unit[1]))]
-            # print(unit_picture.shape)
-            # print(unit_picture)
             numbers = []
+            # Очистка от ненужных пикселей
             for number, row in enumerate(unit_picture):
                 if unit_picture.shape[1] - np.count_nonzero(row) != unit_picture.shape[1]:
                     numbers.append(number)
+            # Добавим сверху один пиксель, чтобы не обрезались нужные детали
             numbers.append(numbers[0] - 1)
             numbers.sort()
-            cleaned_unit_picture = self.thresholded_and_binarized_word_image_box[numbers, unit[0]:unit[1]]   # !
-            # cv.imwrite(f"/home/sfelshtyn/Python/SapLabApp/image_detection_module/pics/{unit}.jpg",
-            # cleaned_unit_picture)
+            # Создаем изображение без лишних пикселей
+            cleaned_unit_picture = self.thresholded_and_binarized_word_image_box[numbers, unit[0]:unit[1]]
+            # Добавляем в unit_boxes
             self.unit_boxes.append(UnitBox(cleaned_unit_picture,
                                            coords=(self.coords[0] + numbers[0],
                                                    self.coords[0] + numbers[-1],
@@ -82,5 +83,14 @@ class WordBox(BoxFunctions):
                                                    ),
                                            position_in_word=position))
 
-        # self.unit_boxes = [UnitBox(self.original_word_image_box[:, list(range(unit[0], unit[1]))])
-        #                    for unit in self.units]
+
+    def __str__(self):
+        return str({
+            "original_word_image_box": self.original_word_image_box,
+            "coords": self.coords,
+            "height": self.height,
+            "width": self.width,
+            "position_in_line_box": self.position_in_line_box,
+            "general_density": self.general_density,
+            "unit_boxes": self.unit_boxes
+        })

@@ -67,7 +67,7 @@ class ImageBox(BoxFunctions):
 
     def __str__(self):
         return str({
-            # "original_image_box": self.original_image_box,
+            "original_image_box": self.original_image_box,
             "coords": self.coords,
             "height": self.height,
             "width": self.width,
