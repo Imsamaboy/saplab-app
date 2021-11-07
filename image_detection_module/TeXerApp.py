@@ -12,11 +12,15 @@ from utils.utils import read_from_pdf
 class TeXerApp:
     def __init__(self):
         """
-        !singleton class!
-        Эксземпляр создаётся при заходе в приложение.
         Происходит подгрузка всех необходимых данных для других модулей.
         """
         pass
+
+    """Singleton class"""
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(TeXerApp, cls).__new__(cls)
+        return cls.instance
 
     def main(self, path="", pages="406"):
         """
@@ -49,9 +53,9 @@ class TeXerApp:
                     print("LINEBOXES")
                     for line_box in image_box.get_line_boxes():
                         # print(line_box.line_number)
-                        cv.imshow("LineBox", line_box.original_line_image_box)
-                        cv.waitKey(0)
-                        cv.destroyAllWindows()
+                        # cv.imshow("LineBox", line_box.original_line_image_box)
+                        # cv.waitKey(0)
+                        # cv.destroyAllWindows()
                         # print("LineBox coords")
                         # print(line_box.coords)
                         line_box.split_line_box_into_words()

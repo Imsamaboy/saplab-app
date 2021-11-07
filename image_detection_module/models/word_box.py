@@ -83,7 +83,6 @@ class WordBox(BoxFunctions):
                                                    ),
                                            position_in_word=position))
 
-
     def __str__(self):
         return str({
             "original_word_image_box": self.original_word_image_box,

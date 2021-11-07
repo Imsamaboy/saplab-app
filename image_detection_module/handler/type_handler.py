@@ -28,13 +28,23 @@ def equals_checker_in_the_image_box(image_box: ImageBox) -> bool:
         return False
 
 
-def define_type_of_image_box(image_box: ImageBox):
+def define_type_of_image_box(image_box: ImageBox, threshold=0.15):
     """
+    :param threshold:
     :param image_box:
     :return:
+    Будет сделано после понедельника
     """
-    # baseline_height = 10  # pix
-    if image_box.get_general_density() > 0.15:
+    # match function_that_defines_type(image_box.original_image_box):
+    #     case r"text\text_with_formula":
+    #         pass
+    #     case r"formula":
+    #         pass
+    #     case r"figure":
+    #         pass
+    #     case r"trash":
+    #         pass
+    if image_box.get_general_density() > threshold:
         image_box.set_type("text")
     else:
         image_box.set_type("smt else")

@@ -5,6 +5,10 @@ import numpy as np
 
 
 class BoxFunctions:
+    """
+    Класс с прописанными функциями для всех боксов
+    Эти функции повторяются у всех боксов
+    """
     def _find_x_density(self, thresholded_and_binarized_image) -> np.array:
         """
         :return: x_density[i] = the number of white pixels in each column of the thresholded_and_binarized_image image
