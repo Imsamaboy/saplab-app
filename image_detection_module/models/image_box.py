@@ -3,12 +3,14 @@
 import numpy as np
 import cv2 as cv
 from typing import List
+import zope.interface
 
-from image_detection_module.models.abstract_box import AbstractBox
+from image_detection_module.models.box_functions import BoxFunctions
 from utils.utils import get_dilated_image, get_thresholded_and_binarized_image, get_gray_image
 
 
-class ImageBox:
+class ImageBox(BoxFunctions):
+
     def __init__(self, original_image_box: np.ndarray, coords: tuple):
         """
         :param original_image_box:
@@ -23,39 +25,12 @@ class ImageBox:
         self.thresholded_and_binarized_image_box = get_thresholded_and_binarized_image(self.gray_image_box)
         self.dilated_image_box = get_dilated_image(self.thresholded_and_binarized_image_box)
         self.laplacian_image_box = None
-        self.x_density = self._find_x_density()
-        self.y_density = self._find_y_density()
-        self.general_density = self._find_general_density()
+        self.x_density = self._find_x_density(self.thresholded_and_binarized_image_box)
+        self.y_density = self._find_y_density(self.thresholded_and_binarized_image_box)
+        self.general_density = self._find_general_density(self.thresholded_and_binarized_image_box)
         self.position_of_the_equals_sign = None
         self.type = None
         self.line_boxes = None
-
-    def _find_x_density(self) -> np.array:
-        """
-        :return: x_density[i] = the number of white pixels in each column of the thresholded_and_binarized_image image
-        """
-        x_density = np.zeros(self.width)
-        for column in range(self.width):
-            x_density[column] = np.count_nonzero(self.thresholded_and_binarized_image_box[:, column])
-        return x_density
-
-    def _find_y_density(self) -> np.array:
-        """
-        :return: y_density[i] = the number of white pixels in each row of the thresholded_and_binarized_image image
-        """
-        y_density = np.zeros(self.height)
-        for row in range(self.height):
-            y_density[row] = np.count_nonzero(self.thresholded_and_binarized_image_box[row])
-        return y_density
-
-    def _find_general_density(self) -> float:
-        """
-        :return: number of white pixels divided by all pixels
-        """
-        count = 0
-        for line in self.thresholded_and_binarized_image_box:
-            count += np.count_nonzero(line)
-        return count / (self.height * self.width)
 
     def get_general_density(self) -> float:
         """

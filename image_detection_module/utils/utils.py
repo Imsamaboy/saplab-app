@@ -98,9 +98,19 @@ def get_laplacian_image(image: np.ndarray, ddepth=cv.CV_16S, kernel=3):
     :param kernel:
     :return:
     """
-    laplacian_image = cv.Laplacian(image, ddepth, kernel)
-    show_images("laplacian&original image", [laplacian_image, image])
+    # laplacian_image = cv.Laplacian(image, ddepth, kernel)
+    # show_images("laplacian&original image", [laplacian_image, image])
     return cv.Laplacian(image, ddepth, kernel)
+
+
+def merge_intervals(borders_array) -> list:
+    merged = []
+    for border in borders_array:
+        if not merged or merged[-1][1] < border[0]:
+            merged.append(border)
+        else:
+            merged[-1][1] = max(merged[-1][1], border[1])
+    return list(map(tuple, merged))
 
 
 if __name__ == "__main__":

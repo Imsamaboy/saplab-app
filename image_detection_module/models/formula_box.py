@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from image_detection_module.models.abstract_box import AbstractBox
+from image_detection_module.models.box_functions import AbstractBox
 
 
 class FormulaBox:

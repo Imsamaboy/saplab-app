@@ -29,12 +29,21 @@ def split_image_box_into_lines(image_box: ImageBox, edge_value_parameter=0.2) ->
 
     dividing_lines.add(image_box.height)
     dividing_lines = sorted(list(dividing_lines))
-    # Деление и создание строк
-    return [LineBox(image_box.original_image_box[dividing_lines[border]:dividing_lines[border + 1]])
-            for border in range(len(dividing_lines) - 1)]
+    # Деление и создание строк (y_up:y_down, x_up:x_down)
+    return [LineBox(image_box.gray_image_box[dividing_lines[border]:dividing_lines[border + 1]],
+                    coords=(image_box.coords[0] + dividing_lines[border],
+                            image_box.coords[0] + dividing_lines[border + 1],
+                            image_box.coords[2],
+                            image_box.coords[3]),
+                    line_number=line_number)
+            for line_number, border in enumerate(range(len(dividing_lines) - 1))]
 
 
 def split_image_box_into_formula_and_text(image_box: ImageBox):
+    """
+    :param image_box:
+    :return:
+    """
     pass
 
 
