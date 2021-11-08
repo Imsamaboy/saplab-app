@@ -3,9 +3,9 @@
 import cv2 as cv
 import numpy as np
 
-from image_detection_module.models.box_functions import BoxFunctions
-from models.unit_box import UnitBox
-from utils.utils import get_gray_image, get_thresholded_and_binarized_image, \
+from image_detection.models.box_functions import BoxFunctions
+from image_detection.models.unit_box import UnitBox
+from image_detection.utils.utils import get_gray_image, get_thresholded_and_binarized_image, \
     get_dilated_image, get_laplacian_image, \
     merge_intervals
 

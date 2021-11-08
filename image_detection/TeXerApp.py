@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 import cv2 as cv
 
-from handler.type_handler import handle
-from handler.split_handler import run_split
-from models.page import Page
-from utils.draw_utils import draw_x_density
-from utils.utils import read_from_pdf
+from image_detection.handler.type_handler import handle
+from image_detection.handler.split_handler import run_split
+from image_detection.models.page import Page
+from image_detection.utils.draw_utils import draw_x_density
+from image_detection.utils.utils import read_from_pdf
 
 
 class TeXerApp:

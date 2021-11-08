@@ -2,8 +2,8 @@ import scipy.signal as ss
 import numpy as np
 from typing import List
 
-from image_detection_module.models.image_box import ImageBox
-from image_detection_module.models.line_box import LineBox
+from image_detection.models.image_box import ImageBox
+from image_detection.models.line_box import LineBox
 
 
 def split_box_into_header_and_line(line_boxes) -> List:

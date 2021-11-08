@@ -19,17 +19,17 @@ def all_blocks(arr):
     return [list(g) for k, g in groupby(arr) if k == 1]
 
 
-def general_term(s, picheight, lower_bound):
+def general_term(s, pic_height, lower_bound):
     blocks = all_blocks(s)
-    return -1 if len(blocks) == 1 and len(blocks[0]) >= lower_bound * picheight else len(blocks)
+    return -1 if len(blocks) == 1 and len(blocks[0]) >= lower_bound * pic_height else len(blocks)
 
 
-def x_lines(image, picheight, lower_bound):
-    return [general_term(i, picheight, lower_bound) for i in image]
+def x_lines(image, pic_height, lower_bound):
+    return [general_term(i, pic_height, lower_bound) for i in image]
 
 
-def y_lines(image, picheight, lower_bound):
-    return [general_term(i, picheight, lower_bound) for i in image.T]
+def y_lines(image, pic_height, lower_bound):
+    return [general_term(i, pic_height, lower_bound) for i in image.T]
 
 
 '''Приведение к одной размерности'''
@@ -72,13 +72,24 @@ def normalise(n, index):
 
 
 def get_norm_seq(image, lower_bound=0.8, size=20):
-    picheight = image.shape()[0]
-    return normalise(size, x_lines(image, picheight, lower_bound)) + normalise(size, y_lines(image, picheight, lower_bound))
+    pic_height = image.shape()[0]
+    return normalise(size, x_lines(image, pic_height, lower_bound)) + normalise(size,
+                                                                                y_lines(image, pic_height, lower_bound))
 
 
-clf = joblib.load('classifier')
+clf = joblib.load('/home/sfelshtyn/Python/SapLabApp/units_recognition/handler/classifier')
 
 
 def get_tex(image):
+    """
+    :param image: jpg image
+    :return:
+    """
     seq = get_norm_seq(image)
     return clf.predict(seq)
+
+
+if __name__ == "__main__":
+    image = Image.open("/home/sfelshtyn/Downloads/Telegram Desktop/e.jpg")
+    result = get_tex(image)
+    print(result)

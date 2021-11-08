@@ -4,9 +4,9 @@ from typing import List
 
 import numpy as np
 
-from image_detection_module.models.box_functions import BoxFunctions
-from models.word_box import WordBox
-from utils.utils import get_gray_image, get_thresholded_and_binarized_image, get_dilated_image, get_laplacian_image
+from image_detection.models.box_functions import BoxFunctions
+from image_detection.models.word_box import WordBox
+from image_detection.utils.utils import get_gray_image, get_thresholded_and_binarized_image, get_dilated_image, get_laplacian_image
 
 
 class LineBox(BoxFunctions):
@@ -39,6 +39,7 @@ class LineBox(BoxFunctions):
         is_local_first, is_local_last = True, False
         begin, end = 0, 0
         # Находим индексы слов (begin - начало слова, end - конец слова)
+        # Warning! Данный код сложноват для чтения!
         for index, density in enumerate(laplacian_x_density):
             if density != 0 and is_local_first:
                 begin = index

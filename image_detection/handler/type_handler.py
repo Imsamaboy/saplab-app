@@ -3,7 +3,7 @@
 """
 from typing import List
 
-from image_detection_module.models.image_box import ImageBox
+from image_detection.models.image_box import ImageBox
 
 
 def equals_checker_in_the_image_box(image_box: ImageBox) -> bool:

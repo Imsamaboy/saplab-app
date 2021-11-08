@@ -98,8 +98,6 @@ def get_laplacian_image(image: np.ndarray, ddepth=cv.CV_16S, kernel=3):
     :param kernel:
     :return:
     """
-    # laplacian_image = cv.Laplacian(image, ddepth, kernel)
-    # show_images("laplacian&original image", [laplacian_image, image])
     return cv.Laplacian(image, ddepth, kernel)
 
 
@@ -114,5 +112,4 @@ def merge_intervals(borders_array) -> list:
 
 
 if __name__ == "__main__":
-    get_laplacian_image(
-        get_thresholded_and_binarized_image(*read_from_pdf("/tom3.pdf", "20")))
+    get_laplacian_image(get_thresholded_and_binarized_image(*read_from_pdf("/tom3.pdf", "20")))

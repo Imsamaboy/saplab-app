@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
-import cv2 as cv
 from typing import List
-import zope.interface
 
-from image_detection_module.models.box_functions import BoxFunctions
-from utils.utils import get_dilated_image, get_thresholded_and_binarized_image, get_gray_image
+from image_detection.models.box_functions import BoxFunctions
+from image_detection.utils.utils import get_dilated_image, get_thresholded_and_binarized_image, get_gray_image
 
 
 class ImageBox(BoxFunctions):
@@ -72,7 +70,6 @@ class ImageBox(BoxFunctions):
             "height": self.height,
             "width": self.width,
             "number_of_image_box": self.number_of_image_box,
-            # "thresholded_and_binarized_image_box": self.thresholded_and_binarized_image_box,
             "general_density": self.general_density,
             "type": self.type,
             "line_boxes": self.line_boxes

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from image_detection_module.models.box_functions import BoxFunctions
+from image_detection.models.box_functions import BoxFunctions
 
 
 class FormulaBox(BoxFunctions):

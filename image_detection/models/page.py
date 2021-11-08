@@ -3,12 +3,11 @@
 import numpy as np
 import cv2 as cv
 
-from utils.utils import compare_contours, read_from_pdf, show_images
-from utils.utils import get_gray_image
-from utils.utils import get_thresholded_and_binarized_image
-from utils.utils import get_dilated_image
-
-from models.image_box import ImageBox
+from image_detection.utils.utils import compare_contours, read_from_pdf, show_images
+from image_detection.utils.utils import get_gray_image
+from image_detection.utils.utils import get_thresholded_and_binarized_image
+from image_detection.utils.utils import get_dilated_image
+from image_detection.models.image_box import ImageBox
 
 
 class Page:
