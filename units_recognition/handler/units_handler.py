@@ -3,7 +3,7 @@ import cv2 as cv
 from functools import partial
 from itertools import groupby
 import random
-from PIL import Image
+# from PIL import Image
 import csv
 import os
 import joblib
@@ -16,7 +16,7 @@ def prepare_image(image):
 
 
 def all_blocks(arr):
-    return [list(g) for k, g in groupby(arr) if k == 1]
+    return [list(g) for k, g in groupby(arr) if k == 255]
 
 
 def general_term(s, pic_height, lower_bound):
@@ -36,8 +36,15 @@ def y_lines(image, pic_height, lower_bound):
 
 
 def stretch(index, k, n):
+    """
+    :param index:
+    :param k:
+    :param n:
+    :return:
+    """
     if k == 0:
         index = [0, 0, 0]
+        k = 3
     elif k < 2:
         index = [index[0]] * 3
         k = len(index)
@@ -72,24 +79,35 @@ def normalise(n, index):
 
 
 def get_norm_seq(image, lower_bound=0.8, size=20):
-    pic_height = image.shape()[0]
-    return normalise(size, x_lines(image, pic_height, lower_bound)) + normalise(size,
-                                                                                y_lines(image, pic_height, lower_bound))
+    pic_height = image.shape[0]
+    return np.array(normalise(size, x_lines(image, pic_height, lower_bound)) + normalise(size,
+                                                                                y_lines(image, pic_height, lower_bound))).reshape(1, -1)
 
 
 clf = joblib.load('/home/sfelshtyn/Python/SapLabApp/units_recognition/handler/classifier')
 
 
-def get_tex(image):
+def get_tex(image) -> np.array:
     """
-    :param image: jpg image
+    :param image: jpg image?
     :return:
     """
     seq = get_norm_seq(image)
+    print(seq)
     return clf.predict(seq)
 
 
 if __name__ == "__main__":
-    image = Image.open("/home/sfelshtyn/Downloads/Telegram Desktop/e.jpg")
-    result = get_tex(image)
+    img = cv.imread("/home/sfelshtyn/Downloads/Telegram Desktop/e.jpg")
+    gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    cv.imshow("", gray_img)
+    _, inv_bin_image = cv.threshold(gray_img,
+                                    254,
+                                    255,
+                                    cv.THRESH_BINARY_INV)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+    for row in inv_bin_image:
+        print(row)
+    result = get_tex(inv_bin_image)
     print(result)

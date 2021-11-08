@@ -43,7 +43,9 @@ class TeXerApp:
                 # cv.waitKey(0)
                 # cv.destroyAllWindows()
             run_split(page.get_image_boxes())
+
         for page in pages:
+            print(len(page.get_image_boxes()))
             for count, image_box in enumerate(page.get_image_boxes()):
                 # print(image_box.type, count + 1)
                 # cv.imshow("ImageBox", image_box.original_image_box)
@@ -53,9 +55,9 @@ class TeXerApp:
                     print("LINEBOXES")
                     for line_box in image_box.get_line_boxes():
                         # print(line_box.line_number)
-                        # cv.imshow("LineBox", line_box.original_line_image_box)
-                        # cv.waitKey(0)
-                        # cv.destroyAllWindows()
+                        cv.imshow("LineBox", line_box.original_line_image_box)
+                        cv.waitKey(0)
+                        cv.destroyAllWindows()
                         # print("LineBox coords")
                         # print(line_box.coords)
                         line_box.split_line_box_into_words()
@@ -70,12 +72,11 @@ class TeXerApp:
                             # print("Units")
                             word_box.split_word_box_into_units()
                             for unit in word_box.unit_boxes:
-                                pass
-                                # print("Unit coords")
-                                # print(unit.coords)
-                                # cv.imshow("units", unit.original_unit_image_box)
-                                # cv.waitKey(0)
-                                # cv.destroyAllWindows()
+                                # Можно тут вызывать predict
+                                # unit.latex_code = get_tex(unit.original_unit_image_box)
+                                cv.imshow("units", unit.original_unit_image_box)
+                                cv.waitKey(0)
+                                cv.destroyAllWindows()
 
 
                 else:
@@ -84,4 +85,4 @@ class TeXerApp:
 
 
 if __name__ == "__main__":
-    TeXerApp().main(path="/resources/static/tom3.pdf")
+    TeXerApp().main(path="/home/sfelshtyn/Python/SapLabApp/resources/static/tom3.pdf")

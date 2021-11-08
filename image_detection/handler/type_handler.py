@@ -35,6 +35,7 @@ def define_type_of_image_box(image_box: ImageBox, threshold=0.15):
     :return:
     Будет сделано после понедельника
     """
+
     # match function_that_defines_type(image_box.original_image_box):
     #     case r"text\text_with_formula":
     #         pass
