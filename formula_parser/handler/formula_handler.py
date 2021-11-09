@@ -288,6 +288,7 @@ def root_frac_determiner(pic):
 
 # import image and convert to NumPy array
 fpath = ''  # should be modified to take picture from memory
+fpath = "/home/sfelshtyn/Pictures/formula.png"
 im = Image.open(fpath)
 im = ImageOps.invert(ImageOps.grayscale(im))
 fig = np.array(im)

@@ -82,6 +82,7 @@ class WordBox(BoxFunctions):
                                                    self.coords[2] + unit[1]
                                                    ),
                                            position_in_word=position))
+            # cv.imwrite(f"/home/sfelshtyn/Python/SapLabApp/resources/pics/{unit}.png", cleaned_unit_picture)
 
     def __str__(self):
         return str({

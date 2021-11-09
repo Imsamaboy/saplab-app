@@ -8,26 +8,57 @@ from image_detection.utils.utils import get_gray_image
 from image_detection.utils.utils import get_thresholded_and_binarized_image
 from image_detection.utils.utils import get_dilated_image
 from image_detection.models.image_box import ImageBox
+from image_detection.models.box_functions import BoxFunctions
+
+PAGE_DENSITY_1 = 0.11
+PAGE_DENSITY_2 = 0.2
 
 
-class Page:
+class Page(BoxFunctions):
     def __init__(self, original_image: np.ndarray):
         self.original_image = original_image
         self.height = original_image.shape[0]
         self.width = original_image.shape[1]
-        self.dilated_image = get_dilated_image(original_image)
+        self.gray_page = get_gray_image(self.original_image)
+        self.thresholded_and_binarized_page = get_thresholded_and_binarized_image(self.gray_page)
+        self.dilated_page = get_dilated_image(self.thresholded_and_binarized_page)
+        self.general_density = self._find_general_density(self.dilated_page)
         self.page_number = None     # Как устанавливаем?
         self.image_boxes = []
 
-    def create_image_boxes(self, dilation=(10, 26)) -> None:
+    def create_image_boxes(self) -> None:
         """
-        :param dilation: параметры расширения пикселей
         :return:
+        p. 21:	0.18044814298549072 - (13, 26) ok
+        p. 22:  0.2085796070167479  - (10, 26) ok
+
+        p. 24:  0.26957707886230065 - (10, 26)  +- ok
+
+        p. 31:  0.2139964838654795  - (10, 26) ok   (13, 26) worse
+        p. 32:  0.17601566440913718  - (13, 26) ok
+        p. 83:  0.20564551513758592 -
+
+        p. 5:	0.05770161807854292 -   (10, 40) ок
+        p. 7:	0.09186543174132233 -   (10, 40) ок
+        p. 145: 0.0873637050148197  -   (10, 40) ok, но большие боксы
+        p. 340:	0.0959212242595373  -   (10, 40) ok, но выделяется ненужный "x" в 4. 4) интеграле
+        ! p. 341:	0.10767311291328759 -   (10, 40) ok !
+        p. 342:	0.09706083390293917 -   (10, 40) ok
+        p. 367: 0.0991096240004537  -   (10, 40) ok (10, 26) worse
+        p. 379:	0.03573861211185964 -   (10, 40) ok (10, 26) ok
+        p. 467:	0.05587848143582458 -   (10, 40) терпимо, попадают лишние символы в боксы
         """
+        if PAGE_DENSITY_2 <= self.general_density:
+            dilation = (10, 26)
+        elif PAGE_DENSITY_1 <= self.general_density < PAGE_DENSITY_2:
+            dilation = (13, 26)
+        else:
+            dilation = (10, 40)
         gray_image = get_gray_image(self.original_image)
         inv_bin_image = get_thresholded_and_binarized_image(gray_image)
         dilated_image = get_dilated_image(inv_bin_image,
-                                          dilation=dilation)
+                                          dilation=dilation,
+                                          iterations=1)
         # detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
         contours, hierarchy = cv.findContours(image=dilated_image,
                                               mode=cv.RETR_EXTERNAL,
@@ -46,6 +77,7 @@ class Page:
         left_right_shift = dilation[1] // 2
 
         contours.sort(key=lambda x: compare_contours(x))
+        count = 1
         for contour in contours:
             x, y, w, h = cv.boundingRect(contour)
             # Подрезаем лишние чёрные пиксели
@@ -56,7 +88,9 @@ class Page:
             coords = (y_up, y_down, x_up, x_down)
             image_copy[y_up:y_down, x_up:x_down] = 0
             # Создаем и добавляем ImageBox в page.image_boxes
-            self.image_boxes.append(ImageBox(self.original_image[y_up:y_down, x_up:x_down], coords=coords))
+            self.image_boxes.append(ImageBox(self.original_image[y:y+h, x:x+w], coords=coords)) # y_up:y_down, x_up:x_down
+            # cv.imwrite(f"/home/sfelshtyn/Python/SapLabApp/resources/pics/ImageBox{count}.png", self.original_image[y:y+h, x:x+w])
+            # count += 1
 
     def create_latex_page(self, ):
         pass

@@ -5,7 +5,7 @@ import cv2 as cv
 from pdf2image import convert_from_path
 from typing import List
 
-DILATION_BLOCK_SIZE = (3, 25)
+DILATION_BLOCK_SIZE = (3, 9)   # 3, 25
 
 
 def read_from_pdf(pdf_file_path, *args) -> List[np.ndarray]:
@@ -76,8 +76,9 @@ def get_thresholded_and_binarized_image(image: np.ndarray,
     return inv_bin_image
 
 
-def get_dilated_image(image: np.ndarray, dilation=DILATION_BLOCK_SIZE):
+def get_dilated_image(image: np.ndarray, dilation=DILATION_BLOCK_SIZE, iterations=1):
     """
+    :param iterations:
     :param image:
     :param dilation:
     :return:
@@ -87,7 +88,7 @@ def get_dilated_image(image: np.ndarray, dilation=DILATION_BLOCK_SIZE):
 
     dilated_image = cv.dilate(image,
                               kernel,
-                              iterations=1)
+                              iterations=iterations)
     return dilated_image
 
 
