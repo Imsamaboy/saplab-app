@@ -5,10 +5,10 @@ import cv2 as cv
 from pdf2image import convert_from_path
 from typing import List
 
-DILATION_BLOCK_SIZE = (3, 9)   # 3, 25
+DILATION_BLOCK_SIZE = (3, 9)  # 3, 25
 
 
-def read_from_pdf(pdf_file_path, *args) -> List[np.ndarray]:
+def read_from_pdf(pdf_file_path, pages) -> List[np.ndarray]:
     """
         Returns a list of numpy array images
         1 - просто первая страница
@@ -17,19 +17,14 @@ def read_from_pdf(pdf_file_path, *args) -> List[np.ndarray]:
     """
     if not os.path.isfile(pdf_file_path):
         raise FileNotFoundError("Make sure your file path is correct")
-    images_list = []
-    for pages_arg in args:
-        pages_arg = str(pages_arg)
-        if '-' not in pages_arg:
-            first_page = int(pages_arg)
-            last_page = first_page
-        else:
-            first_page, last_page = map(int, re.split(r'-', pages_arg))
-        images_list.extend(list(map(np.array,
-                                    convert_from_path(pdf_file_path,
-                                                      first_page=first_page,
-                                                      last_page=last_page))))
-    return images_list
+    if type(pages) is tuple:
+        return list(map(np.array, convert_from_path(pdf_file_path,
+                                                    first_page=pages[0],
+                                                    last_page=pages[1])))
+    else:
+        return list(map(np.array, convert_from_path(pdf_file_path,
+                                                    first_page=pages,
+                                                    last_page=pages)))
 
 
 def show_images(window_name: str, images: List) -> None:

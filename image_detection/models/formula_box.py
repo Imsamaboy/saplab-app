@@ -14,5 +14,6 @@ class FormulaBox(BoxFunctions):
         self.position_in_line_box = None
 
 
+
 if __name__ == "__main__":
     pass

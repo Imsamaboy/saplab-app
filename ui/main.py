@@ -37,7 +37,6 @@ class ScreenShotWindow(QWidget):
         self.move(0, 0)
         QApplication.setOverrideCursor(Qt.CrossCursor)
 
-
         self.setFixedHeight(QDesktopWidget().screenGeometry().height())
         self.setFixedWidth(QDesktopWidget().screenGeometry().width())
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint)

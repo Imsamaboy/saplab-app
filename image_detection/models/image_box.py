@@ -3,6 +3,8 @@
 import numpy as np
 from typing import List
 
+from numpy import ndarray
+
 from image_detection.models.box_functions import BoxFunctions
 from image_detection.utils.utils import get_dilated_image, get_thresholded_and_binarized_image, get_gray_image
 
@@ -26,9 +28,37 @@ class ImageBox(BoxFunctions):
         self.x_density = self._find_x_density(self.thresholded_and_binarized_image_box)
         self.y_density = self._find_y_density(self.thresholded_and_binarized_image_box)
         self.general_density = self._find_general_density(self.thresholded_and_binarized_image_box)
+        self.black_pixels = self.count_black_pixels()
         self.position_of_the_equals_sign = None
         self.type = None
         self.line_boxes = None
+
+    def get_mean_density_by_x(self) -> ndarray:
+        """
+        :return:
+        """
+        return np.mean(self.x_density)
+
+    def get_mean_density_by_y(self) -> ndarray:
+        """
+        :return:
+        """
+        return np.mean(self.y_density)
+
+    def count_black_pixels(self, ) -> int:
+        """
+        :return:
+        """
+        count = 0
+        for line in self.thresholded_and_binarized_image_box:
+            count += np.count_nonzero(line)
+        return count
+
+    def count_white_pixels(self) -> int:
+        """
+        :return:
+        """
+        return self.height * self.width - self.black_pixels
 
     def get_general_density(self) -> float:
         """

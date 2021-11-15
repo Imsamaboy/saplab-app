@@ -34,4 +34,4 @@ class BoxFunctions:
         count = 0
         for line in thresholded_and_binarized_image:
             count += np.count_nonzero(line)
-        return count / (self.height * self.width)
+        return count / (self.height * self.width)   # thresholded_and_binarized_image.size

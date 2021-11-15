@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import os
+from typing import List
+
 import numpy as np
 import cv2 as cv
 
@@ -15,7 +18,7 @@ PAGE_DENSITY_2 = 0.2
 
 
 class Page(BoxFunctions):
-    def __init__(self, original_image: np.ndarray):
+    def __init__(self, original_image: np.ndarray, page_number: int):
         self.original_image = original_image
         self.height = original_image.shape[0]
         self.width = original_image.shape[1]
@@ -23,10 +26,10 @@ class Page(BoxFunctions):
         self.thresholded_and_binarized_page = get_thresholded_and_binarized_image(self.gray_page)
         self.dilated_page = get_dilated_image(self.thresholded_and_binarized_page)
         self.general_density = self._find_general_density(self.dilated_page)
-        self.page_number = None     # Как устанавливаем?
-        self.image_boxes = []
+        self.page_number = page_number
+        self.image_boxes = self.__create_image_boxes()
 
-    def create_image_boxes(self) -> None:
+    def __create_image_boxes(self) -> List:
         """
         :return:
         p. 21:	0.18044814298549072 - (13, 26) ok
@@ -54,6 +57,7 @@ class Page(BoxFunctions):
             dilation = (13, 26)
         else:
             dilation = (10, 40)
+
         gray_image = get_gray_image(self.original_image)
         inv_bin_image = get_thresholded_and_binarized_image(gray_image)
         dilated_image = get_dilated_image(inv_bin_image,
@@ -77,7 +81,8 @@ class Page(BoxFunctions):
         left_right_shift = dilation[1] // 2
 
         contours.sort(key=lambda x: compare_contours(x))
-        count = 1
+
+        image_boxes = []
         for contour in contours:
             x, y, w, h = cv.boundingRect(contour)
             # Подрезаем лишние чёрные пиксели
@@ -86,11 +91,11 @@ class Page(BoxFunctions):
             x_up = x + left_right_shift - 1
             x_down = x + w - left_right_shift
             coords = (y_up, y_down, x_up, x_down)
+            # Закрашиваем выделенное
             image_copy[y_up:y_down, x_up:x_down] = 0
             # Создаем и добавляем ImageBox в page.image_boxes
-            self.image_boxes.append(ImageBox(self.original_image[y:y+h, x:x+w], coords=coords)) # y_up:y_down, x_up:x_down
-            # cv.imwrite(f"/home/sfelshtyn/Python/SapLabApp/resources/pics/ImageBox{count}.png", self.original_image[y:y+h, x:x+w])
-            # count += 1
+            image_boxes.append(ImageBox(self.original_image[y_up:y_down, x_up:x_down], coords=coords))
+        return image_boxes
 
     def create_latex_page(self, ):
         pass

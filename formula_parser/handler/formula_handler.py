@@ -1,3 +1,5 @@
+from typing import Union
+
 from PIL import Image, ImageDraw, ImageOps
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,6 +32,12 @@ def straight_borders(pic):
 
 # function for curve borders construction
 def curve_border(pic, lb, rb):
+    """
+    :param pic:
+    :param lb:
+    :param rb:
+    :return:
+    """
     print(['lb/rb:', lb, rb])
     # Cut white area around symbols
     pp = np.sum(pic[:, lb:rb + 1], axis=0)

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import csv
+import re
 
 import cv2 as cv
 
@@ -24,67 +25,39 @@ class TeXerApp:
             cls.instance = super(TeXerApp, cls).__new__(cls)
         return cls.instance
 
-    def main(self, path="", pages="24"):
-        """
-        default - 20
-        :param path:
-        :param pages: много текста: 406
-        :return:
-        """
-        pages = [Page(simple_image) for simple_image in read_from_pdf(path, pages)]
-        for number, page in enumerate(pages, start=1):
-            page.create_image_boxes()
+    """Убрать в другое место"""
+    def parse_pages_string(self, pages):
+        if '-' not in pages:
+            first_page = int(pages)
+            last_page = first_page
+        else:
+            first_page, last_page = map(int, re.split(r'-', pages))
+        return first_page if first_page == last_page else (first_page, last_page)
+
+    def main(self, path="", page_numbers="89"):
+
+        page_numbers = self.parse_pages_string(page_numbers)
+        if type(page_numbers) is tuple:
+            first_page, last_page = page_numbers
+            pages = [Page(simple_image, number) for simple_image, number in
+                     zip(read_from_pdf(path, page_numbers), range(first_page, last_page + 1))]
+        else:
+            pages = [Page(simple_image, page_numbers) for simple_image in
+                     read_from_pdf(path, page_numbers)]
+
         handle(pages)
+
         for page in pages:
-            # print("IMAGEBOXES")
+            print("Page number: ", page.page_number)
             for image_box in page.get_image_boxes():
-                pass
-                # print("ImageBox coords")
                 print(image_box.coords)
                 print(image_box.general_density)
-                cv.imshow("ImageBox", image_box.original_image_box)
-                cv.waitKey(0)
-                cv.destroyAllWindows()
+                print(image_box.height)
+                print(image_box.width)
+                # cv.imshow("ImageBox", image_box.original_image_box)
+                # cv.waitKey(0)
+                # cv.destroyAllWindows()
             run_split(page.get_image_boxes())
-
-        # for page in pages:
-        #     print(len(page.get_image_boxes()))
-        #     for count, image_box in enumerate(page.get_image_boxes()):
-        #         cv.imshow("ImageBox", image_box.original_image_box)
-        #         cv.waitKey(0)
-        #         cv.destroyAllWindows()
-                # if image_box.get_line_boxes():
-                #     print("LINEBOXES")
-                #     for line_box in image_box.get_line_boxes():
-                #         # print(line_box.line_number)
-                #         # cv.imshow("LineBox", line_box.original_line_image_box)
-                #         # cv.waitKey(0)
-                #         # cv.destroyAllWindows()
-                #         # print("LineBox coords")
-                #         # print(line_box.coords)
-                #         line_box.split_line_box_into_words()
-                #         # print("Words:")
-                #         for word_box in line_box.word_boxes:
-                #             # cv.imshow("word", word_box.original_word_image_box)
-                #             # cv.waitKey(0)
-                #             # cv.destroyAllWindows()
-                #             # draw_x_density(word)
-                #             # print("WordBox coords")
-                #             # print(word_box.coords)
-                #             # print("Units")
-                #             word_box.split_word_box_into_units()
-                #             for unit in word_box.unit_boxes:
-                #                 pass
-                #                 # Можно тут вызывать predict
-                #                 # unit.latex_code = get_tex(unit.original_unit_image_box)
-                #                 # cv.imshow("units", unit.original_unit_image_box)
-                #                 # cv.waitKey(0)
-                #                 # cv.destroyAllWindows()
-                #
-                #
-                # else:
-                #     pass
-                #     # print("else")
 
 
 if __name__ == "__main__":

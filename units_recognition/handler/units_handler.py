@@ -81,10 +81,13 @@ def normalise(n, index):
 def get_norm_seq(image, lower_bound=0.8, size=20):
     pic_height = image.shape[0]
     return np.array(normalise(size, x_lines(image, pic_height, lower_bound)) + normalise(size,
-                                                                                y_lines(image, pic_height, lower_bound))).reshape(1, -1)
+                                                                                         y_lines(image, pic_height,
+                                                                                                 lower_bound))).reshape(
+        1, -1)
 
 
 clf = joblib.load('/home/sfelshtyn/Python/SapLabApp/units_recognition/handler/classifier')
+scaler = joblib.load("/home/sfelshtyn/Python/SapLabApp/units_recognition/handler/scaler_1")
 
 
 def get_tex(image) -> np.array:
@@ -94,20 +97,18 @@ def get_tex(image) -> np.array:
     """
     seq = get_norm_seq(image)
     print(seq)
-    return clf.predict(seq)
+    return clf.predict(scaler.transform(seq))
 
 
 if __name__ == "__main__":
-    img = cv.imread("/home/sfelshtyn/Downloads/Telegram Desktop/e.jpg")
+    img = cv.imread("/home/sfelshtyn/Downloads/Telegram Desktop/к.png")
     gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     cv.imshow("", gray_img)
-    _, inv_bin_image = cv.threshold(gray_img,
-                                    254,
-                                    255,
-                                    cv.THRESH_BINARY_INV)
+    # _, inv_bin_image = cv.threshold(gray_img,
+    #                                 254,
+    #                                 255,
+    #                                 cv.THRESH_BINARY_INV)
     cv.waitKey(0)
     cv.destroyAllWindows()
-    for row in inv_bin_image:
-        print(row)
-    result = get_tex(inv_bin_image)
+    result = get_tex(gray_img)
     print(result)
