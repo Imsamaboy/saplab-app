@@ -2,26 +2,36 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
+import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 
 from image_detection.models.box_functions import BoxFunctions
 from image_detection.models.word_box import WordBox
-from image_detection.utils.utils import get_gray_image, get_thresholded_and_binarized_image, get_dilated_image, get_laplacian_image
+from image_detection.utils.utils import get_gray_image, get_thresholded_and_binarized_image, get_dilated_image, \
+    get_laplacian_image
 
 
 class LineBox(BoxFunctions):
-    def __init__(self, original_line_image_box: np.ndarray, coords: tuple, line_number: int):
+    def __init__(self, gray_line_image_box: np.ndarray, coords: tuple, line_number: int):
         """
-        :param original_line_image_box: original LineBox image
+        :param gray_line_image_box: original LineBox image
         """
-        self.original_line_image_box = original_line_image_box
+        self.gray_line_image_box = gray_line_image_box
         self.coords = coords
-        self.height = self.original_line_image_box.shape[0]
-        self.width = self.original_line_image_box.shape[1]
+        self.height = self.gray_line_image_box.shape[0]
+        self.width = self.gray_line_image_box.shape[1]
         self.line_number = line_number
-        self.thresholded_and_binarized_line_image_box = get_thresholded_and_binarized_image(self.original_line_image_box)
+        self.thresholded_and_binarized_line_image_box = get_thresholded_and_binarized_image(self.gray_line_image_box)
+        # cv2.imshow("", self.thresholded_and_binarized_line_image_box)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         self.dilated_line_image_box = get_dilated_image(self.thresholded_and_binarized_line_image_box, dilation=(2, 3))
         self.laplacian_line_image_box = get_laplacian_image(self.dilated_line_image_box)
+        self.lp_density = self._find_x_density(self.laplacian_line_image_box)
+        # cv2.imshow("", self.dilated_line_image_box)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         self.x_density = self._find_x_density(self.thresholded_and_binarized_line_image_box)
         self.y_density = self._find_y_density(self.thresholded_and_binarized_line_image_box)
         self.general_density = self._find_general_density(self.thresholded_and_binarized_line_image_box)
@@ -51,6 +61,10 @@ class LineBox(BoxFunctions):
                 is_local_first, is_local_last = True, False
         # Добавляем последнее слово
         words.append((begin, len(laplacian_x_density)))
+        print(words)
+        #         units.append([begin, len(self.x_density)])
+        #         # Сливаем пересекающиеся интервалы, если такие есть
+        #         merged_units = merge_intervals(units)
         return words
 
     def split_line_box_into_words(self, ):
@@ -58,7 +72,7 @@ class LineBox(BoxFunctions):
         This function creates WordBoxes
         :return: None
         """
-        self.word_boxes = [WordBox(self.original_line_image_box[:, list(range(word[0], word[1]))],
+        self.word_boxes = [WordBox(self.gray_line_image_box[:, word[0]:word[1]],   # list(range(word[0], word[1]))
                                    coords=(self.coords[0],
                                            self.coords[1],
                                            self.coords[2] + word[0],
@@ -70,7 +84,7 @@ class LineBox(BoxFunctions):
 
     def __str__(self):
         return str({
-            "original_line_image_box": self.original_line_image_box,
+            "original_line_image_box": self.gray_line_image_box,
             "coords": self.coords,
             "height": self.height,
             "width": self.width,

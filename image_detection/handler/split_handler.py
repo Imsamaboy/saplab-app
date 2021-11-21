@@ -44,41 +44,31 @@ def split_box_into_header_and_line(line_boxes) -> List:
     # return line_boxes
 
 
-def create_dividing_lines(image_box: ImageBox, edge_value_parameter=0.2) -> List:
-    """
-    :param image_box:
-    :param edge_value_parameter:
-    :return:
-    """
-    # Установка порогов для деления на строки
-    # print()
-    edge_value = image_box.get_mean_density_by_y() * 1/4    # * image_box.width
-    # print(image_box.original_image_box.shape)
-    # print("EDGE VALUE PARAMETR: ", edge_value)
-    # Сглаживаем y_density
-    y_density = image_box.y_density
-    y_density_filt = ss.medfilt(y_density, 9)
-    # Установка границ деления на строки
-    up_bound, down_bound = 0, 0
+def create_dividing_lines(image_box: ImageBox) -> List:
+    flag = True
     dividing_lines = set()
-    temp = []
-    for index in range(image_box.height - 1):
-        if y_density_filt[index] == 0:
-            temp.append(index)
+    dividing_lines.add(0)
+    for index in range(len(image_box.y_density)):
+        if image_box.y_density[index] == 0 and flag:
+            dividing_lines.add(index)
+            flag = False
+        if image_box.y_density[index] != 0:
+            flag = True
+    if image_box.height not in dividing_lines:
+        dividing_lines.add(image_box.height)
+    dividing_lines = sorted(list(dividing_lines))
 
-        if y_density_filt[index + 1] < edge_value <= y_density_filt[index]:
-            up_bound = index + 1
-            # print("UP_BOUND", up_bound)
+    indices_that_must_delete = [index + 1 for index in range(len(dividing_lines) - 1) if
+                                dividing_lines[index + 1] - dividing_lines[index] <= 15]
+    for index in indices_that_must_delete:
+        del dividing_lines[index]
 
-        if y_density_filt[index + 1] > edge_value >= y_density_filt[index]:
-            down_bound = index + 1
-            # print("DOWN_BOUND", down_bound)
-            # print(np.argmin(y_density[up_bound: down_bound + 1]))
+    return dividing_lines
 
-            dividing_lines.add(np.argmin(y_density[up_bound: down_bound + 1]) + up_bound)
-    dividing_lines.add(image_box.height)
-    # print("TEMP", temp)
-    return sorted(list(dividing_lines))
+
+def clear_unnecessary_black_lines(image: np.ndarray) -> List:
+    return sorted(
+        [number for number, row in enumerate(image) if image.shape[1] - np.count_nonzero(row) != image.shape[1]])
 
 
 def split_image_box_into_lines(image_box: ImageBox) -> List:
@@ -86,17 +76,31 @@ def split_image_box_into_lines(image_box: ImageBox) -> List:
     :param image_box:
     :return:
     """
+    line_boxes = []
     dividing_lines = create_dividing_lines(image_box)
-    # Деление и создание строк (y_up:y_down, x_up:x_down)
-    return [
-        LineBox(original_line_image_box=image_box.gray_image_box[dividing_lines[border]:dividing_lines[border + 1]],
-                coords=(image_box.coords[0] + dividing_lines[border],
-                        image_box.coords[0] + dividing_lines[border + 1],
-                        image_box.coords[2],
-                        image_box.coords[3]),
-                line_number=line_number)
-        for line_number, border in enumerate(range(len(dividing_lines) - 1))
-    ]
+    for line_number, index in enumerate(range(len(dividing_lines) - 1)):
+        # img = image_box.thresholded_and_binarized_image_box[dividing_lines[index]:dividing_lines[index + 1], :]
+        numbers = clear_unnecessary_black_lines(
+            image_box.thresholded_and_binarized_image_box[dividing_lines[index]:dividing_lines[index + 1], :])
+        # Деление и создание строк (y_up:y_down, x_up:x_down)
+        # TODO: Сейчас я не учитываю numbers, когда сую координаты в LineBox
+        line_boxes.append(LineBox(
+            gray_line_image_box=image_box.gray_image_box[dividing_lines[index]:dividing_lines[index + 1], :],
+            coords=(image_box.coords[0] + dividing_lines[index],
+                                          image_box.coords[0] + dividing_lines[index + 1],
+                                          image_box.coords[2],
+                                          image_box.coords[3]),
+            line_number=line_number))
+    return line_boxes
+    # return [
+    #     LineBox(original_line_image_box=image_box.gray_image_box[dividing_lines[border]:dividing_lines[border + 1]],
+    #             coords=(image_box.coords[0] + dividing_lines[border],
+    #                     image_box.coords[0] + dividing_lines[border + 1],
+    #                     image_box.coords[2],
+    #                     image_box.coords[3]),
+    #             line_number=line_number)
+    #     for line_number, border in enumerate(range(len(dividing_lines) - 1))
+    # ]
 
 
 def split_image_box_into_formula_and_text(image_box: ImageBox):
@@ -149,13 +153,15 @@ def run_split(image_boxes):
             image_box.line_boxes = split_image_box_into_lines(image_box)
 
         if image_box.type == "formula":
+            pass
             # print("formula")
-            check_image_box_for_splitting(image_box)
+            # check_image_box_for_splitting(image_box)
 
         if image_box.type == "text_with_formula":
+            pass
             # print("text_with_formula")
             # print("mean", image_box.get_mean_density_by_y())
-            dividing_lines = split_image_box_into_formula_and_text(image_box)
+            # dividing_lines = split_image_box_into_formula_and_text(image_box)
 
             # cv.imshow("ImageBox",
             #           image_box.thresholded_and_binarized_image_box[0:82, :])
